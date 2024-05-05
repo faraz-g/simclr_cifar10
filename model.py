@@ -6,7 +6,7 @@ class SimCLR(nn.Module):
     def __init__(self, projection_dim: int = 128):
         super(SimCLR, self).__init__()
 
-        self.feature_extractor = resnet18(pretrained=False)
+        self.feature_extractor = resnet18(weights=None)
         self.n_features = self.feature_extractor.fc.in_features
 
         self.feature_extractor.fc = nn.Identity()
@@ -18,8 +18,8 @@ class SimCLR(nn.Module):
         )
 
     def forward(self, x_i, x_j):
-        h_i = self.encoder(x_i)
-        h_j = self.encoder(x_j)
+        h_i = self.feature_extractor(x_i)
+        h_j = self.feature_extractor(x_j)
 
         z_i = self.projector(h_i)
         z_j = self.projector(h_j)
