@@ -7,10 +7,10 @@ import os
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-BATCH_SIZE = 256
+BATCH_SIZE = 512
 TEMPERATURE = 0.5
-NUM_EPOCHS = 100
-EXPERIMENT_NAME = "256bs"
+NUM_EPOCHS = 200
+EXPERIMENT_NAME = "512bshlr"
 
 
 def train(train_loader, model, criterion, optimizer, device):
@@ -41,7 +41,7 @@ def main():
     )
     model = SimCLR()
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-2)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=NUM_EPOCHS)
     criterion = NT_Xent(batch_size=BATCH_SIZE, temperature=TEMPERATURE)
 
@@ -49,14 +49,14 @@ def main():
     checkpoints_path = Path(__file__).parent / "checkpoints"
     os.makedirs(checkpoints_path, exist_ok=True)
 
-    for epoch in range(1, NUM_EPOCHS):
+    for epoch in range(1, NUM_EPOCHS + 1):
         loss_epoch = train(
             train_loader=dataloader, model=model, criterion=criterion, optimizer=optimizer, device=device
         )
         scheduler.step()
 
         print(f"Epoch [{epoch}/{NUM_EPOCHS}]\t Loss: {loss_epoch / len(dataloader)}\t lr: {scheduler.get_last_lr()}")
-        if epoch % 20 == 0 or epoch == NUM_EPOCHS - 1:
+        if epoch % 40 == 0 or epoch == NUM_EPOCHS - 1:
             torch.save(model.state_dict(), os.path.join(checkpoints_path, f"model_epoch_{epoch}_{EXPERIMENT_NAME}"))
 
 

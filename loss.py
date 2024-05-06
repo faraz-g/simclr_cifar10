@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
-import torch.distributed as dist
 
-"""This implementation belongs to: https://github.com/Spijkervet/SimCLR/blob/master/simclr/modules/nt_xent.py"""
+"""This implementation is inspired from: https://github.com/Spijkervet/SimCLR/blob/master/simclr/modules/nt_xent.py"""
 
 
 class NT_Xent(nn.Module):
@@ -25,10 +24,6 @@ class NT_Xent(nn.Module):
         return mask
 
     def forward(self, z_i, z_j):
-        """
-        We do not sample negative examples explicitly.
-        Instead, given a positive pair, similar to (Chen et al., 2017), we treat the other 2(N − 1) augmented examples within a minibatch as negative examples.
-        """
         N = 2 * self.batch_size
 
         z = torch.cat((z_i, z_j), dim=0)

@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.decomposition import PCA
 
 BATCH_SIZE = 512
-MODEL_PATH = "simclr_cifar10/checkpoints/model_epoch_180"
+MODEL_PATH = "checkpoints/model_epoch_499_512bs"
 
 
 def inference(loader, simclr_model, device):
@@ -37,7 +37,7 @@ def get_features(simclr_model, train_loader, test_loader, device):
     return train_X, train_y, test_X, test_y
 
 
-def main(test_pca: bool = True):
+def main():
     device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
     train_dataset = get_cifar_dataset(
