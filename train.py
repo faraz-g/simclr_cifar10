@@ -9,8 +9,8 @@ from tqdm import tqdm
 
 BATCH_SIZE = 512
 TEMPERATURE = 0.5
-NUM_EPOCHS = 200
-EXPERIMENT_NAME = "512bshlr"
+NUM_EPOCHS = 500
+EXPERIMENT_NAME = "512bs"
 
 
 def train(train_loader, model, criterion, optimizer, device):
@@ -41,7 +41,7 @@ def main():
     )
     model = SimCLR()
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-2)
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=NUM_EPOCHS)
     criterion = NT_Xent(batch_size=BATCH_SIZE, temperature=TEMPERATURE)
 
@@ -56,7 +56,7 @@ def main():
         scheduler.step()
 
         print(f"Epoch [{epoch}/{NUM_EPOCHS}]\t Loss: {loss_epoch / len(dataloader)}\t lr: {scheduler.get_last_lr()}")
-        if epoch % 40 == 0 or epoch == NUM_EPOCHS - 1:
+        if epoch % 40 == 0 or epoch == NUM_EPOCHS:
             torch.save(model.state_dict(), os.path.join(checkpoints_path, f"model_epoch_{epoch}_{EXPERIMENT_NAME}"))
 
 
